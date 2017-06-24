@@ -590,6 +590,26 @@ function power
 ç "e(($2) * l($1))"
 }
 
+function send_data_on_port
+{
+ if [ -z "$1" ]
+ then
+  echo "Inserisci il file o la cartella da inviare"
+ else
+  tar -czf - $1 | pv | nc -l 12321
+ fi
+}
+
+function receive_data_from_ip_port
+{
+ if [ -z "$1" ]
+ then
+  echo "In serisci l'ip della macchina da cui i dti vengono spediti"
+ else
+  nc $1 12321 | pv | tar -xzf -
+ fi
+}
+
 
 
 xset b off
