@@ -170,6 +170,8 @@ function èè
 
 function open_ports
 {
+#### ss -p
+#### lsof -i
 netstat -anp --tcp --udp | grep LISTEN
 }
 
