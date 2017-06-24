@@ -610,6 +610,4 @@ function receive_data_from_ip_port
  fi
 }
 
-
-
 xset b off
