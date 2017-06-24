@@ -1,0 +1,595 @@
+BLACK="\[\033[0;30m\]"
+BLUE="\[\033[0;34m\]"
+GREEN="\[\033[0;32m\]"
+CYAN="\[\033[0;36m\]"
+RED="\[\033[0;31m\]"
+PURPLE="\[\033[0;35m\]"
+BROWN="\[\033[0;33m\]"
+GRAY="\[\033[1;30m\]"
+LIGHT_GREY="\[\033[0;37m\]"
+DARK_GREY="\[\033[1;30m\]"
+LIGHT_BLUE="\[\033[1;34m\]"
+LIGHT_GREEN="\[\033[1;32m\]"
+LIGHT_CYAN="\[\033[1;36m\]"
+LIGHT_RED="\[\033[1;31m\]"
+LIGHT_PURPLE="\[\033[1;35m\]"
+YELLOW="\[\033[1;33m\]"
+WHITE="\[\033[1;37m\]"
+NO_COLOUR="\[\033[0m\]"
+GREEN_GREEN="\[\033[42m\]\[\033[1;32m\]"
+GREEN_RED="\[\033[42m\]\[\033[1;31m\]"
+GREEN_BLACK="\[\033[42m\]\[\033[1;31m\]"
+GREEN_RED1="\[\033[42m\]\[\033[0;31m\]"
+GREEN_YELLOW="\[\033[42m\]\[\033[1;33m\]"
+BLUE_YELLOW="\[\033[34m\]\[\033[1;33m\]"
+RED_WHITE="\[\033[42m\]\[\033[1;37m\]"
+PROMPT_1="$WHITE_GREEN1($WHITE_YELLOWO$WHITE_GREEN,$WHITE_YELLOWO$WHITE_GREEN1)$NO_COLOUR"
+PROMPT="\[\033[41m\]\[\033[1;33m\]O$WHITE_GREEN,\[\033[41m\]\[\033[1;33m\]O$NO_COLOUR"
+PROMPT___="$GREEN_YELLOW°$GREEN_GREEN,$GREEN_YELLOW°$NO_COLOUR"
+OCCHI_CHIUSI_OLD="$NO_COLOUR-$GREEN_GREEN1,$NO_COLOUR-"
+OCCHI_CHIUSI="$GREEN_YELLOW-$GREEN_RED,$GREEN_YELLOW-$NO_COLOUR"
+PROMPT_SOTTO="$GREEN_GREEN $GREEN_GREEN~ $NO_COLOUR"
+BOCCA="$GREEN_GREEN $GREEN_GREEN= $NO_COLOUR"
+BOCCA_ROSSA="\[\033[41m\]\[\033[1;33m\]=$NO_COLOUR"
+BOCCA_TRISTE="$GREEN_GREEN $GREEN_GREEN^ $NO_COLOUR"
+BOCCA1="$GREEN_GREEN $GREEN_GREEN^ $NO_COLOUR"
+
+
+#
+#Ignora le righe che iniziano con un carattere di spazio. Ignora ogni riga uguale all'elemento precedente della cronologia.
+#
+HISTCONTROL=ignoreboth
+
+HISTFILESIZE=100000
+#
+#Per ogni riga stampa "data e ora" nel seguente formato [ 04/19/10 - 00:00:00 ]
+#
+HISTTIMEFORMAT=" [ %D - %T ] "
+#
+#Indica la grandezza delle righe visualizzate quando si lancia il comando history
+#
+HISTSIZE=5000
+
+
+
+function prompt_rosso
+{
+    PS1="${TITLEBAR}$PROMPT$BLUE<<<$LIGHT_RED\w$BLUE>>>$WHITE$NO_COLOUR \n$BOCCA_ROSSA"
+}
+
+function prompt_verde
+{
+	#PS1="${TITLEBAR}$BLUE($GREEN giorno: \$(date +%d-%b-%y) ore: \$(date +%H:%M)$BLUE )$BLUE[$GREEN\u@\h:\w$BLUE]$WHITE$NO_COLOUR \n$OCCHI_CHIUSI"
+	PS1="${TITLEBAR}$BLUE[$GREEN\u$LIGHT_GREEN@$GREEN\h:$LIGHT_GREEN\w$BLUE]$WHITE$NO_COLOUR \n$OCCHI_CHIUSI"
+}
+
+function prompt_old
+{
+	#PS1="${TITLEBAR}$BLUE($GREEN giorno: \$(date +%d-%b-%y) ore: \$(date +%H:%M)$BLUE )$BLUE[$GREEN\u@\h:\w$BLUE]$WHITE$NO_COLOUR \n$OCCHI_CHIUSI"
+	PS1="${TITLEBAR}$BLUE[$RED_WHITE\u$LIGHT_GREEN@$RED_WHITE\h:$LIGHT_GREEN\w$BLUE]$WHITE$NO_COLOUR \n$OCCHI_CHIUSI_OLD"
+}
+
+
+
+function prompt_giallo
+{
+	PS1="${TITLEBAR}$PROMPT$BLUE<<<$YELLOW\w$BLUE>>>$WHITE$NO_COLOUR \n$BOCCA"
+}
+
+function prompt_blu
+{
+	PS1="${TITLEBAR}$BLUE<<<$LIGHT_BLUE\w$BLUE>>>$WHITE$NO_COLOUR \n$PROMPT"
+}
+
+function add_head
+{
+   cat - $2  <<<$1> $2.tmp
+   mv $2.tmp $2
+}
+
+function download_ra
+{
+  mplayer -noframedrop -dumpfile $2.ra -dumpstream $1$2.ra
+}
+
+function download_ra1
+{
+  mplayer -noframedrop -dumpfile $2.ra -dumpstream $1.ra
+}
+
+function download_rai_audiolibro_2007
+{
+  mplayer -noframedrop -dumpfile $2.ra -dumpstream rtsp://mm6.rai.it/radiofonia/radio3/napoli/terzo_anello/2007/$1$2.ra 
+}
+
+function download_rai_audiolibro
+{
+
+  mplayer -noframedrop -dumpfile $2.ra -dumpstream rtsp://mm6.rai.it/radiofonia/radio3/napoli/terzo_anello/$1$2.ra
+}
+
+function toDaitarn1
+{
+  scp $1 dbianchi@daitarn1.register.it:~
+}
+
+function fromDaitarn1
+{
+  scp dbianchi@daitarn1.register.it:~/$1 .
+}
+
+function à
+{
+ clear
+
+if [ "$BASH_COMMAND_NUMBER" == "" ]
+then
+  BASH_COMMAND_NUMBER=1
+fi
+
+#if [ $BASH_COMMAND_NUMBER -eq 0 ]; then
+# sed -n 0,1p ~/.directory_attuale > ~/.bash_command
+#else
+ sed -n $BASH_COMMAND_NUMBER,1p ~/.directory_attuale > ~/.bash_command
+#fi
+
+cat ~/.bash_command
+
+ if  [ `wc -l ~/.directory_attuale | awk '{print $1}'` -eq $BASH_COMMAND_NUMBER ]
+ then
+     BASH_COMMAND_NUMBER=1
+ else
+     BASH_COMMAND_NUMBER=$(expr $BASH_COMMAND_NUMBER + 1)
+ fi
+}
+
+function +à
+{
+#prompt_rosso
+clear
+$(head -n 1 ~/.bash_command)
+}
+
+function linea
+{
+sed -n $1p $2
+}
+
+function èè
+{
+ if [ -z "$1" ]
+ then
+     echo "esecuzione file php: necessario argomento file!"
+ else
+    php -ln $1
+     rm out
+     php $1 > out
+     vim out
+ fi
+ }
+
+function open_ports
+{
+netstat -anp --tcp --udp | grep LISTEN
+}
+
+function local_open_ports
+{
+echo "Scanning TCP ports...";for p in {1..1023};do (echo >/dev/tcp/localhost/$p) >/dev/null 2>&1 && echo "$p > open";done
+}
+
+
+function è
+{
+ if [ -z "$1" ]
+ then
+     echo "esecuzione file php: necessario argomento file!"
+ else
+     php -ln $1
+ #   rm out
+ #   php $1 > out
+ #   vim out
+ fi
+}
+
+function count_down()
+{
+
+destin="$2"
+target=`date +%s --date="25 Dec 2013 00:00:00"`
+source=`date +%s`
+
+diff=`expr $target - $source`
+
+seconds=$diff
+min_sec=`expr $diff / 60`:`expr $diff % 60`
+ho_mi_s=`expr $diff / 3600`:`expr \( $diff % 3600 \) / 60`:`expr $diff % 60`
+hou_sec=`expr $diff / 3600`:`expr $diff % 3600`
+day_sec=`expr $diff / 86400`:`expr $diff % 86400`
+da_mi_s=`expr $diff / 86400`:`expr \( $diff % 86400 \) / 60`:`expr $diff % 60`
+d_h_m_s=`expr $diff / 86400`:`expr \( $diff % 86400 \) / 3600`:`expr \( \( $diff
+ % 86400 \) % 3600 \) / 60`:`expr $diff % 60`
+wdh_m_s=`expr $diff / 86400 / 7`:`expr \( $diff / 86400 \) % 7`:`expr \( $diff %
+ 86400 \) / 3600`:`expr \( $diff % 3600 \) / 60`:`expr $diff % 60`
+
+echo $ho_mi_s Hours:Minutes:Seconds remaining\!
+
+}
+
+function ipaddress
+{
+    #netstat -n -t | awk '{print $4}' | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" |grep -v "127.0.0.1" | sort -u | grep -v ".0."
+    netstat -n -t | awk '{print $4}' | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" |grep -v ".0." | sort -u
+}
+
+function python_share_dir
+{
+    python -m SimpleHTTPServer 12321
+}
+
+prompt_verde
+alias ++="v ."
+alias locale="cd /media/sda1/locale"
+alias netstat_="netstat -ntpl"
+#alias jboss_go_nohup=nohup $JBOSS_HOME"bin/run.sh -c messaging -b 0.0.0.0 &"
+alias wget="wget -E -H -k -K -p "
+# verifica il seguente con http://127.0.0.1:9999/info.php   --> locale http 9999
+alias tunnel_11111="ssh -L 127.0.0.1:11111:195.110.105.184:80 dbianchi@daitarn2.register.it"
+# verifica il seguente con https://127.0.0.1:8888/info.php  --> locale https 8888
+# la directory dei log sul card_server --->  /www/COMMON/web/ccxml.register.it/htdocs/xmlrpccc_wl/log
+# per vedere i log fare "tail -f  195.110.123.148_ligeti01_xml "
+alias k="komodo"
+alias mkdir="mkdir -p"
+alias shred="shred -n 50 -z -u -v "
+
+function pi_greco
+{
+    echo "scale=100; 4*a(1)" | bc -l
+}
+
+function ç
+{
+    echo "$1" | bc -l
+}
+
+
+function dove_sono
+{
+
+if [ `ifconfig -v eth1|grep inet|awk '{print $2}'|awk -F. '{print $1}'|awk -F: '{print $2}'` -eq "192" ]; then
+    if [ `ifconfig -v eth1|grep inet|awk '{print $2}'|awk -F. '{print $2}'` -eq "168" ]; then
+        if [ `ifconfig -v eth1|grep inet|awk '{print $2}'|awk -F. '{print $3}'` -eq "0" ]; then
+           echo "CASA"
+        else
+           echo "LAVORO"
+        fi
+    else
+        echo "LAVORO"
+    fi
+else
+    echo "LAVORO"
+fi
+}
+
+function pdf_copertina
+{
+mogrify -resize 665x940 $1 && convert $1 $1.pdf && sleep 6 && pdftk $1.pdf "$2" cat output _"$2"
+}
+
+function pdf_insert_blank
+{
+pdftk A=$1 B=~/Private/DOC/pagina_A5_bianca.pdf  cat A1-$2 B  A`expr $2 + 1`-end output $1.new.pdf
+}
+
+function pdf_join
+{
+pdftk $1 $2 cat output o.pdf
+}
+
+function converti
+{
+iconv -t ISO88591 $1 > $1_ISO88591.txt
+}
+
+function google_xml
+{
+sed -n $1p /media/sda4/JBOSS/jboss-4.2.3.GA/server/messaging/adplanner/Google/axis.log  > /home/dbianchi/Desktop/google_xml_riga_$1.xml
+}
+
+function axis_xml()
+{
+sed -n $1p /media/sda4/JBOSS/jboss-4.2.3.GA/bin/axis.log > /home/dbianchi/Desktop/axis_riga_$1.xml
+}
+
+
+function  z()
+{
+ if [ -z "$1" ]
+ then
+     echo "Devi mettere il nome della directory che vuoi comprimere!"
+ else
+    zip -r $1.zip $1/
+ fi
+}
+
+function port_process()
+{
+fuser -n tcp $1
+}
+
+function svndiff()
+{
+   svn cat -r HEAD $1 >/tmp/diff_$1.diff && meld $1 /tmp/diff_$1.diff
+}
+
+
+function unz()
+{
+ if [ -z "$1" ]
+ then
+     echo "Devi mettere il nome del file zippato"
+ else
+    if [ -z "$2" ]
+    then
+        unzip -l $1
+    else
+        unzip -p $1 $2
+    fi
+ fi
+}
+
+
+function elimina_parentesi()
+{ 
+    cat $1 |tr "\n" " "|sed s/\([^\(\)]*\)/\(---LEVEL1---\)/g 
+}
+
+function LEVA()
+{ 
+    cat $1 |tr "\n" " "|sed s/{[^{}]*}/HHH/g
+}
+
+function close_level1()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|sed 's/§§§/\n/g'
+}
+
+function close_level2()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|LEVA|sed 's/§§§/\n/g'
+}
+
+function close_level3()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|LEVA|LEVA|sed 's/§§§/\n/g'
+}
+
+function close_level4()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|LEVA|LEVA|LEVA|sed 's/§§§/\n/g'
+}
+
+function close_level5()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|LEVA|LEVA|LEVA|LEVA|sed 's/§§§/\n/g'
+}
+
+function close_level6()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|LEVA|LEVA|LEVA|LEVA|LEVA|sed 's/§§§/\n/g'
+}
+
+function close_level7()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|LEVA|LEVA|LEVA|LEVA|LEVA|LEVA|sed 's/§§§/\n/g'
+}
+
+function close_level8()
+{
+    cat $1 |sed 's/$/§§§/'|LEVA|LEVA|LEVA|LEVA|LEVA|LEVA|LEVA|LEVA|sed 's/§§§/\n/g'
+}
+
+function elab_for_postgres()
+{
+    cat $1 | sed s/GO/\;§§§/ | tr "\n" " " | sed s/§§§/\\n/g > $1.new
+}
+
+
+function xpid()
+{
+wid=$(xwininfo  |grep 'Window id:' |cut -d" " -f4)
+pid=$(xprop -id "$wid" |grep "^_NET_WM_PID" | cut -d" " -f3)
+id=$(echo $pid|grep '^ *[0-9][0-9]* *$')
+echo "*************************** PID $id ****************************"
+ps -efjH|grep $id 
+}
+
+function remote_fs()
+{
+ if [ -z "$1" ]
+ then
+    echo "metti user@ip della macchina di cui vuoi montare il fs oppure '-' per smontare"
+ else
+    if [ "$1" == "-" ]; then
+        sudo umount /media/remote_fs
+        zenity --info --text "il filesystem di $1 \nè stato smontato dal path"
+    else
+        sshfs $1:/media /media/remote_fs
+        zenity --info --text "il filesystem di $1 \nè stato montato sul path --> /media/remote_fs\nlo apro"
+        if [ $? -eq 0 ]; then
+            nautilus /media/remote_fs
+        else
+            zenity --info --text "molto bene!"; 
+        fi 
+    fi
+ fi
+}
+
+function cvs2qif()
+{
+    cat mbank.csv | sort | tr -s [" "] [" *"]| sed -e s'/\(\".*\);\(.*\"\)/\1.\2/g' | awk -f mbank2qif.awk | sed -e "s/D\([0-9][0-9][0-9][0-9]\)-\([0-9][0-9]\)-\([0-9][0-9]\)/D\1.\2.\3/g" -e 's/T\(.*\),\([0-9][[0-9]\)/T\1.\2/g' -e 's/\(.*\) \(.*\).\([0-9][0-9]\)/\1\2.\3/'g > test.qif 
+}
+
+function msg_goodbye()
+{
+echo $(sed -n $(expr $RANDOM % $(wc -l /home/dbianchi/CONFIG/frasi_saluto.txt| awk '{print $1}') + 1),1p /home/dbianchi/CONFIG/frasi_saluto.txt)
+}
+
+function has_dns_fr
+{
+whois $1 | grep ns-list 
+}
+
+function change_extension
+{
+for i in `ls`;do $(mv $i $(echo $i | sed s/$1/$2/)); done;
+}
+
+function sed_replace_on_directory
+{  
+  if [ -z "$1" ]
+  then
+     echo "metti i parametri 1 = regex per sed, 2,3,4 estenzioni su cui cercare, \n la ricerca viene fatta sulla directory corrente"
+  else
+   sed $1 `find . -name *.$2 && find . -name *.$3 && find . -name *.$4`
+  fi
+}
+
+function join_video_file
+{
+  #mencoder -oac copy -ovc copy -idx -o output.avi video1.avi video2.avi video3.avi
+  mencoder -oac copy -ovc copy -idx -o $3 $1 $2
+}
+
+function copy_video_file
+{
+  if [ -z "$1" ]
+  then
+     echo "inizio hh:mm:ss  durata hh:mm:ss file_origine  file_destinazione"
+  else
+    mencoder -ss "$1" -endpos "$2" -ovc copy -oac pcm "$3" -o "$4"
+  fi
+}
+
+function rm2mp3
+{
+  mplayer $1.rm -ao pcm:file=$1.wav -vc dummy -vo null
+  lame -h -b 32 $1.wav $1.mp3
+  rm $1.wav
+}
+
+function grep_dir
+{
+  grep -niR "$1" * | grep -v .svn
+}
+
+
+function distinct_row_file
+{
+    awk '!x[$0]++' $1
+}
+
+function httrack
+{
+   httrack $1 -O $1 -v
+}
+
+function txt2qif
+{
+  if [ -z "$1" ]
+  then
+     echo "trasforma un cvs così fatto: data;descrizione;importo;categoria_conto in un file qif"
+  else
+ #    sed 's#\([^\;]*\)\;\([^\;]*\)\;\([^\;]*\)\;\(.*\)$#D\1\nT\3\nC\nP\nM\2\nL\4\n\^#g' $1
+
+sed 's#\([^\;]*\)\;\([^\;]*\)\;\([^\;]*\)\;\(.*\)$#D\1\nT\3\nC\nP\nM\2\nL\4\n\^#g' $1 > tmp.qif
+
+echo -e "!Account\nN(CC_DANIELE_LARA)\n^\n!Type:Bank" > head_qif
+cat head_qif tmp.qif > $1.qif
+rm head_qif tmp.qif
+
+  fi
+}
+
+function files_of_running_process
+{
+# fa vedere i file che sta attualmente usando il programma
+# $1 da cui con pidof $1 si prende il pid
+ls -l /proc/`pidof $1`/fd
+}
+
+function mount_cassettone
+{
+sshfs cassettone:/media  /media/mnt/cassettone
+}
+
+function counter
+{
+for i in {1..$1};do echo $i;sleep 1;done
+}
+
+
+function valuepath_backup
+{
+mysqldump -udbianchi -pnacitho2 wp > /home/dbianchi/Scrivania/valuepath_wp.`date +%Y%m%d`.sql
+mv /home/dbianchi/Private/DOC/MIEI/valuepath.7z /home/dbianchi/Private/DOC/MIEI/valuepath.old.7z
+rm /home/dbianchi/Private/DOC/MIEI/valuepath.7z
+7z a /home/dbianchi/Private/DOC/MIEI/valuepath.7z /home/dbianchi/Scrivania/valuepath_wp.`date +%Y%m%d`.sql
+rm /home/dbianchi/Scrivania/valuepath_wp.`date +%Y%m%d`.sql
+}
+
+function valuepath_restore
+{
+cd /tmp
+7z x /home/dbianchi/Private/DOC/MIEI/valuepath.7z
+
+if [ `hostname` != "bianchi-mob" ]
+then
+  mysqldump -udbianchi -p<passwd> wp < /tmp/valuepath_wp.*.sql
+fi
+
+rm /tmp/valuepath_wp.*.sql
+cd
+}
+
+function book_author
+{
+sqlite3 /media/sda7/data/metadata.db "select title,
+author_sort from
+books where author_sort like '%$1%'"
+}
+
+function book_title
+{
+sqlite3 /media/sda7/data/metadata.db "select title,
+author_sort from
+books where title like '%$1%'"
+}
+
+function book_tag
+{
+sqlite3 /media/sda7/data/metadata.db "select title, author_sort, tags.name from books,
+books_tags_link, tags where books.id = books_tags_link.book
+and tags.id = books_tags_link.tag and tags.name like '%$1%'"
+
+}
+
+function n-radix
+{
+# x=a^b
+# ln(x)=ln(a^b)
+# ln(x)=b*ln(a)
+# exp(ln(x))=exp(b*ln(a))
+# x=(exp(b*ln(a))
+
+ç "e((1/$1) * l($2))"
+}
+
+function power
+{
+ç "e(($2) * l($1))"
+}
+
+
+
+xset b off
